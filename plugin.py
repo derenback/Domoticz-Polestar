@@ -203,7 +203,7 @@ class BasePlugin:
             (UNIT_BATTERY, "Battery", 243, 6),
             (UNIT_CHARGER, "Charger", 243, 19),
             (UNIT_LOCK, "Lock", 244, 73),
-            (UNIT_RANGE, "Range", 243, 19),
+            (UNIT_RANGE, "Range", 243, 31),
             (UNIT_CHARGING, "Charging", 243, 19),
             (UNIT_ODOMETER, "Odometer", 243, 31),
             (UNIT_LOCATION, "Location", 243, 19),
@@ -213,7 +213,7 @@ class BasePlugin:
         for offset, device_name, device_type, subtype in definitions:
             unit = _unit_for_vehicle(index, offset)
             if unit not in Devices:
-                if device_name == "Odometer":
+                if device_name in ("Range", "Odometer"):
                     Domoticz.Device(
                         Name=device_name,
                         Unit=unit,
@@ -261,7 +261,7 @@ class BasePlugin:
         units = (
             (_unit_for_vehicle(index, UNIT_BATTERY), battery_level, str(battery_level or "0")),
             (_unit_for_vehicle(index, UNIT_CHARGER), charger, charger),
-            (_unit_for_vehicle(index, UNIT_RANGE), range_km, "%s km" % range_km),
+            (_unit_for_vehicle(index, UNIT_RANGE), range_km, str(range_km)),
             (_unit_for_vehicle(index, UNIT_CHARGING), charging, charging),
             (_unit_for_vehicle(index, UNIT_ODOMETER), odometer_meters, odometer_value),
             (_unit_for_vehicle(index, UNIT_LOCATION), location_value, location_value),

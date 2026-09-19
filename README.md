@@ -26,9 +26,11 @@ Polestar Data Portal `Account ID`, `Client ID`, and `Client Secret` as the
 plugin settings. The optional `Vehicle ID` can restrict the plugin to one VIN;
 leave it blank to monitor all vehicles.
 
-The plugin polls every five minutes by default. The minimum polling interval is
-60 seconds. Credentials are stored in Domoticz hardware settings, so protect
-access to the Domoticz database and web interface.
+The plugin polls every five minutes by default. The technical minimum polling
+interval is 60 seconds. The default interval is within the daily API quota for
+one vehicle; increase it for multiple vehicles.
+Credentials are stored in Domoticz hardware settings, so protect access to the
+Domoticz database and web interface.
 
 ## Polestar API access
 
@@ -45,10 +47,18 @@ request it through the Polestar API onboarding or support contact associated
 with your account. The API endpoint used by this plugin is the EU North 1 M2M
 endpoint.
 
-No numeric request quota is documented in the API material used by this plugin.
-The exact limit may depend on the API account or application, so check the
-terms or onboarding information supplied with your credentials. Each poll uses
-one vehicle-list request plus six telemetry requests per vehicle, in addition
-to token authentication. Keep the default five-minute interval unless your
-account explicitly permits more frequent polling; increase the interval if
-the API returns HTTP 429 (Too Many Requests).
+Polestar limits the API to **10,000 requests per day** and **100 requests per
+minute**. For one vehicle, each plugin poll currently uses:
+
+- 1 OAuth token request
+- 1 vehicle-list request
+- 6 telemetry requests: availability, battery, location, health, odometer,
+  and exterior
+
+That is 8 requests per poll for one vehicle. At the default five-minute
+interval, this is approximately 2,304 requests per day, well below the daily
+limit and the per-minute limit. The 60-second technical minimum would use up to
+11,520 requests per day, so a practical recommended minimum is 2 minutes for
+one vehicle. Each additional vehicle adds 6 telemetry requests per poll;
+increase the interval further for multiple vehicles, and increase it if the API
+returns HTTP 429 (Too Many Requests).
