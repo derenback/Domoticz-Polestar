@@ -220,7 +220,7 @@ class BasePlugin:
             (UNIT_DISTANCE_TO_SERVICE, "Distance To Service", 243, 31),
             (UNIT_AVERAGE_SPEED, "Average Speed", 243, 31),
             (UNIT_AVERAGE_SPEED_AUTOMATIC, "Average Speed Automatic", 243, 31),
-            (UNIT_AVERAGE_CONSUMPTION, "Average Consumption", 243, 31),
+            (UNIT_AVERAGE_CONSUMPTION, "Consumption", 243, 31),
         )
         custom_units = {
             "Range": "1;km",
@@ -230,7 +230,7 @@ class BasePlugin:
             "Distance To Service": "1;km",
             "Average Speed": "1;km/h",
             "Average Speed Automatic": "1;km/h",
-            "Average Consumption": "1;kWh/100km",
+            "Consumption": "1;kWh/100km",
         }
         for offset, device_name, device_type, subtype in definitions:
             unit = _unit_for_vehicle(index, offset)
