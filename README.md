@@ -11,6 +11,12 @@ Reads Polestar Data Portal telemetry and creates Domoticz devices for:
 - Vehicle location
 - Service warning
 - Telemetry availability status
+- Engine hours to service
+- Days to service
+- Distance to service
+- Average speed
+- Automatic average speed
+- Average energy consumption
 
 ## Installation
 

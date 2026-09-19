@@ -47,7 +47,13 @@ UNIT_ODOMETER = 6
 UNIT_LOCATION = 7
 UNIT_SERVICE = 8
 UNIT_AVAILABILITY = 9
-UNITS_PER_VEHICLE = 9
+UNIT_ENGINE_HOURS_TO_SERVICE = 10
+UNIT_DAYS_TO_SERVICE = 11
+UNIT_DISTANCE_TO_SERVICE = 12
+UNIT_AVERAGE_SPEED = 13
+UNIT_AVERAGE_SPEED_AUTOMATIC = 14
+UNIT_AVERAGE_CONSUMPTION = 15
+UNITS_PER_VEHICLE = 15
 
 
 def _request_json(request: Request) -> Any:
@@ -209,17 +215,33 @@ class BasePlugin:
             (UNIT_LOCATION, "Location", 243, 19),
             (UNIT_SERVICE, "Service", 243, 19),
             (UNIT_AVAILABILITY, "Telemetry", 243, 19),
+            (UNIT_ENGINE_HOURS_TO_SERVICE, "Engine Hours To Service", 243, 31),
+            (UNIT_DAYS_TO_SERVICE, "Days To Service", 243, 31),
+            (UNIT_DISTANCE_TO_SERVICE, "Distance To Service", 243, 31),
+            (UNIT_AVERAGE_SPEED, "Average Speed", 243, 31),
+            (UNIT_AVERAGE_SPEED_AUTOMATIC, "Average Speed Automatic", 243, 31),
+            (UNIT_AVERAGE_CONSUMPTION, "Average Consumption", 243, 31),
         )
+        custom_units = {
+            "Range": "1;km",
+            "Odometer": "1;km",
+            "Engine Hours To Service": "1;h",
+            "Days To Service": "1;days",
+            "Distance To Service": "1;km",
+            "Average Speed": "1;km/h",
+            "Average Speed Automatic": "1;km/h",
+            "Average Consumption": "1;kWh/100km",
+        }
         for offset, device_name, device_type, subtype in definitions:
             unit = _unit_for_vehicle(index, offset)
             if unit not in Devices:
-                if device_name in ("Range", "Odometer"):
+                if device_name in custom_units:
                     Domoticz.Device(
                         Name=device_name,
                         Unit=unit,
                         Type=device_type,
                         Subtype=subtype,
-                        Options={"Custom": "1;km"},
+                        Options={"Custom": custom_units[device_name]},
                         Used=1,
                     ).Create()
                 else:
@@ -246,6 +268,16 @@ class BasePlugin:
         odometer_meters = _telemetry_value(odometer, "odometerMeters")
         coordinate = _telemetry_value(location, "coordinate")
         service = _status_label(_telemetry_value(health, "serviceWarning"))
+        engine_hours_to_service = _telemetry_value(health, "engineHoursToService")
+        days_to_service = _telemetry_value(health, "daysToService")
+        distance_to_service_km = _telemetry_value(health, "distanceToServiceKm")
+        average_speed = _telemetry_value(odometer, "averageSpeedKmPerHour")
+        average_speed_automatic = _telemetry_value(
+            odometer, "averageSpeedKmPerHourAutomatic"
+        )
+        average_consumption = _telemetry_value(
+            battery, "averageEnergyConsumptionKwhPer100Km"
+        )
         availability_status = _status_label(
             _telemetry_value(availability, "availabilityStatus")
         )
@@ -267,6 +299,12 @@ class BasePlugin:
             (_unit_for_vehicle(index, UNIT_LOCATION), location_value, location_value),
             (_unit_for_vehicle(index, UNIT_SERVICE), service, service),
             (_unit_for_vehicle(index, UNIT_AVAILABILITY), availability_status, availability_status),
+            (_unit_for_vehicle(index, UNIT_ENGINE_HOURS_TO_SERVICE), engine_hours_to_service, str(engine_hours_to_service)),
+            (_unit_for_vehicle(index, UNIT_DAYS_TO_SERVICE), days_to_service, str(days_to_service)),
+            (_unit_for_vehicle(index, UNIT_DISTANCE_TO_SERVICE), distance_to_service_km, str(distance_to_service_km)),
+            (_unit_for_vehicle(index, UNIT_AVERAGE_SPEED), average_speed, str(average_speed)),
+            (_unit_for_vehicle(index, UNIT_AVERAGE_SPEED_AUTOMATIC), average_speed_automatic, str(average_speed_automatic)),
+            (_unit_for_vehicle(index, UNIT_AVERAGE_CONSUMPTION), average_consumption, str(average_consumption)),
         )
         for unit, value, display_value in units:
             if unit in Devices and value is not None:
