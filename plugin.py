@@ -208,7 +208,7 @@ class BasePlugin:
             (UNIT_ODOMETER, "Odometer", 243, 31),
             (UNIT_LOCATION, "Location", 243, 19),
             (UNIT_SERVICE, "Service", 243, 19),
-            (UNIT_AVAILABILITY, "Availability", 243, 19),
+            (UNIT_AVAILABILITY, "Telemetry", 243, 19),
         )
         for offset, device_name, device_type, subtype in definitions:
             unit = _unit_for_vehicle(index, offset)

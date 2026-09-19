@@ -10,7 +10,7 @@ Reads Polestar Data Portal telemetry and creates Domoticz devices for:
 - Odometer
 - Vehicle location
 - Service warning
-- Availability status
+- Telemetry availability status
 
 ## Installation
 
