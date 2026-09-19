@@ -25,7 +25,8 @@
 
 import base64
 import json
-from typing import Any, Dict, List, Optional
+import time
+from typing import Any, Dict, List, Optional, Tuple
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urljoin
 from urllib.request import Request, urlopen
@@ -69,7 +70,7 @@ def _request_json(request: Request) -> Any:
         raise RuntimeError("response was not JSON") from error
 
 
-def _get_access_token(client_id: str, client_secret: str) -> str:
+def _get_access_token(client_id: str, client_secret: str) -> Tuple[str, int]:
     credentials = base64.b64encode((client_id + ":" + client_secret).encode()).decode()
     request = Request(
         DEFAULT_TOKEN_URL,
@@ -87,7 +88,13 @@ def _get_access_token(client_id: str, client_secret: str) -> str:
     token = response.get("access_token") or response.get("accessToken")
     if not token:
         raise RuntimeError("token response did not contain an access token")
-    return str(token)
+    try:
+        expires_in = max(
+            0, int(response.get("expires_in", response.get("expiresIn", 3600)))
+        )
+    except (TypeError, ValueError):
+        expires_in = 3600
+    return str(token), expires_in
 
 
 def _fetch(token: str, account_id: str, path: str) -> Any:
@@ -141,6 +148,8 @@ class BasePlugin:
         self.interval = 300
         self.heartbeat_count = 0
         self.debug = False
+        self.access_token = ""
+        self.access_token_expires_at = 0.0
 
     def onStart(self) -> None:
         self.account_id = Parameters["Mode1"].strip()
@@ -174,7 +183,14 @@ class BasePlugin:
         if not self.account_id or not self.client_id or not self.client_secret:
             raise RuntimeError("Account ID, Client ID, and Client Secret are required")
 
-        token = _get_access_token(self.client_id, self.client_secret)
+        if time.time() >= self.access_token_expires_at:
+            self.access_token, expires_in = _get_access_token(
+                self.client_id, self.client_secret
+            )
+            self.access_token_expires_at = time.time() + max(0, expires_in - 60)
+            if self.debug:
+                Domoticz.Log("POLESTAR: OAuth token renewed")
+        token = self.access_token
         response = _fetch(token, self.account_id, "/v1/vehicles")
         vehicle_ids = response.get("data", []) if isinstance(response, dict) else []
         vehicle_ids = [str(value) for value in vehicle_ids if value]

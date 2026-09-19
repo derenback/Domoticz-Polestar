@@ -56,15 +56,16 @@ endpoint.
 Polestar limits the API to **10,000 requests per day** and **100 requests per
 minute**. For one vehicle, each plugin poll currently uses:
 
-- 1 OAuth token request
+- OAuth token request when the cached token expires
 - 1 vehicle-list request
 - 6 telemetry requests: availability, battery, location, health, odometer,
   and exterior
 
-That is 8 requests per poll for one vehicle. At the default five-minute
-interval, this is approximately 2,304 requests per day, well below the daily
-limit and the per-minute limit. The 60-second technical minimum would use up to
-11,520 requests per day, so a practical recommended minimum is 2 minutes for
-one vehicle. Each additional vehicle adds 6 telemetry requests per poll;
-increase the interval further for multiple vehicles, and increase it if the API
-returns HTTP 429 (Too Many Requests).
+That is 7 requests per poll for one vehicle, plus an occasional OAuth token
+request when the cached token expires. At the default five-minute interval,
+this is approximately 2,016 requests per day, plus token renewals, well below
+the daily limit and the per-minute limit. The 60-second technical minimum would
+use up to 10,080 requests per day before token renewals, so a practical
+recommended minimum is 2 minutes for one vehicle. Each additional vehicle adds
+6 telemetry requests per poll; increase the interval further for multiple
+vehicles, and increase it if the API returns HTTP 429 (Too Many Requests).
