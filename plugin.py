@@ -231,11 +231,11 @@ class BasePlugin:
             (UNIT_LOCATION, "Location", 243, 19),
             (UNIT_SERVICE, "Service", 243, 19),
             (UNIT_AVAILABILITY, "Telemetry", 243, 19),
-            (UNIT_ENGINE_HOURS_TO_SERVICE, "Engine Hours To Service", 243, 31),
-            (UNIT_DAYS_TO_SERVICE, "Days To Service", 243, 31),
-            (UNIT_DISTANCE_TO_SERVICE, "Distance To Service", 243, 31),
-            (UNIT_AVERAGE_SPEED, "Average Speed", 243, 31),
-            (UNIT_AVERAGE_SPEED_AUTOMATIC, "Average Speed Automatic", 243, 31),
+            (UNIT_ENGINE_HOURS_TO_SERVICE, "Eng Service in", 243, 31),
+            (UNIT_DAYS_TO_SERVICE, "Service in", 243, 31),
+            (UNIT_DISTANCE_TO_SERVICE, "Service in", 243, 31),
+            (UNIT_AVERAGE_SPEED, "Ave. Speed", 243, 31),
+            (UNIT_AVERAGE_SPEED_AUTOMATIC, "Ave. Speed Auto", 243, 31),
             (UNIT_AVERAGE_CONSUMPTION, "Consumption", 243, 31),
         )
         custom_units = {
