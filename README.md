@@ -47,7 +47,7 @@ The three credential fields are issued for Polestar Data Portal M2M/API access:
 - **Client Secret**: the corresponding OAuth 2.0 client secret.
 
 These values are not the Polestar app login or the vehicle VIN. Sign in to the
-[Polestar Data Portal](https://data-portal.polestar.com/se/auth) to obtain or
+[Polestar Data Portal](https://data-portal.polestar.com/) to obtain or
 manage the API account details. If API access is not enabled for your account,
 request it through the Polestar API onboarding or support contact associated
 with your account. The API endpoint used by this plugin is the EU North 1 M2M
